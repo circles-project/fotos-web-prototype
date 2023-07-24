@@ -1,5 +1,4 @@
-import { StateCreator, create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand";
 import { MatrixClient } from "matrix-js-sdk";
 
 interface SdkClientStore {
@@ -7,6 +6,7 @@ interface SdkClientStore {
   setClient: (client: MatrixClient) => void;
 }
 
+// Zustand store for the matrix client
 const useSdkClientStore = create<SdkClientStore>(
     (set) => ({
         client: {} as MatrixClient,

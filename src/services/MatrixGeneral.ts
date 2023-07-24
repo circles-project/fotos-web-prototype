@@ -1,11 +1,13 @@
 import { MatrixClient } from "matrix-js-sdk";
 
+// matrixcs is a global variable on the window object to access the Matrix SDK for the browser
 declare global {
   interface Window {
     matrixcs: any;
   }
 }
 
+// Creates the client, starts it, and syncs it
 export async function setupClient(loginJson: any): Promise<MatrixClient> {
   console.log("Setting up client");
   const client: MatrixClient = await window.matrixcs.createClient({

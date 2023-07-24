@@ -23,6 +23,7 @@ interface AuthStore {
   setServerResponse: (serverResponse: any) => void;
 }
 
+// Zustand store for auth
 const useAuthStore = create<AuthStore>(
   persist<AuthStore>(
     (set) => ({
@@ -77,7 +78,7 @@ const useAuthStore = create<AuthStore>(
     }),
     {
       name: "auth-store", // Name for persisted data in local storage (default storage is localStorage)
-      storage: createJSONStorage(() => sessionStorage), // Persist data in localStorage
+      storage: createJSONStorage(() => sessionStorage), // Persist data in session storage
     }
   ) as StateCreator<AuthStore, [], []>
 );

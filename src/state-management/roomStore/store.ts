@@ -12,6 +12,7 @@ interface RoomListStore {
     setRoomList : (roomList: Map<string, RoomStore>) => void;
 }
 
+// Zustand store for rooms, need to implement react querying for rooms
 const useRoomStore = create<RoomListStore>(
     (set) => ({
         roomList: new Map<string, RoomStore>(),

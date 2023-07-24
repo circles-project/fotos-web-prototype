@@ -1,13 +1,11 @@
 import { FileInfoType } from "../../state-management/fileStore/store";
 import * as sdk from "matrix-js-sdk";
 import { RoomStore } from "../../state-management/roomStore/store";
-import { resolve } from "path";
 
 // Uploads the photos to the Photo Room
 export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom: any): Promise<string> {
   return new Promise((resolve, reject) => {
       client.uploadContent(file).then((res: any) => {
-        // TODO: Ensure this Check for image vs video works
         let fileType = "";
         if (file.type.includes("image")) {
           fileType = "m.image";
@@ -19,6 +17,7 @@ export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom
         client.sendMessage(photoRoom.roomId, {
           msgtype: fileType,
           body: file.name,
+
           // TODO: Add encrypted files/messages for encrypted rooms, adjust width and height?
           url: res.content_uri,
           info: {
@@ -33,8 +32,7 @@ export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom
             h: 200,
             w: 200,
           }
-          // TODO: Res is popping up as null, need to return promise but also account for multiple files being uploaded, one at a time? Or maybe array of event ids?
-        }).then((res: sdk.ISendEventResponse) => {
+          }).then((res: sdk.ISendEventResponse) => {
           resolve(res.event_id);
         }).catch((err: any) => {
           console.log("Error: ", err);
@@ -54,17 +52,19 @@ export const fetchExistingFiles = (client: any, photoRoom: any, setFileList: (fi
     client.roomInitialSync(photoRoom.roomId, 100).then((res: any) => {
       console.log("Initial Sync: ", res);
 
+      // Filtering out the events that are not messages and not empty
       const eventType = "m.room.message";
       const filteredEvents = res.messages.chunk.filter(
         (event: any) => event.type === eventType && event.content.url !== undefined
       );
 
+      // Generating list of file URLs from the filtered events
       const updatedFileInfo: FileInfoType[] = filteredEvents.map((event: any) => {
-
         let httpUrl = client.mxcUrlToHttp(event.content.url);
         return { fileURL: httpUrl, type: event.content.msgtype, roomId: event.room_id, eventId: event.event_id };
       });
 
+      // Once synced, sets the file list state in Zustand store
       setFileList(updatedFileInfo);
       console.log("Current Files: ", updatedFileInfo);
     });
@@ -72,6 +72,7 @@ export const fetchExistingFiles = (client: any, photoRoom: any, setFileList: (fi
   }
 };
 
+// Fetches the rooms and adds them to the room list state Zustand Store
 export async function roomSetup (client: sdk.MatrixClient, addRoom: (room: RoomStore) => void): Promise<void> {
   const rooms = client.getRooms()
   const findPhotoGallery = rooms.find((room: any) => room.name === "My Photo Galleries");

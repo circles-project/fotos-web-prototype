@@ -1,4 +1,4 @@
-import { StateCreator, create } from "zustand";
+import { create } from "zustand";
 
 // Add additional fields as needed
 export interface FileInfoType {
@@ -8,6 +8,7 @@ export interface FileInfoType {
     eventId: string;
 }
 
+// Zustand store for files, need to implement react querying for files
 // Change to use a map instead of an array?
 interface FileStore {
     fileList: FileInfoType[];
