@@ -1,0 +1,19 @@
+.cancelBtn {
+    position: relative;
+    height: 25%;
+    top: 75%;
+    background-color: white;
+    color: red;
+    border: none;
+}
+
+.homeCentering {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    margin-top: 5%;
+    text-align: center;
+
+    width: 50%;
+    height: 50%;
+}

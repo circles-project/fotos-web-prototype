@@ -1,0 +1,14 @@
+.sideBar {
+    width: 100%;
+    height: 100vh;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+    left: 0;
+    top: 7.5%; /* Adjust top position to align with the bottom of the navbar */
+    position: fixed; /* Fixed position to make it always visible */
+    z-index: 0;
+}
+
+.content {
+    margin-top: 25%;
+}

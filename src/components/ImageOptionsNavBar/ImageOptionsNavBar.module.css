@@ -1,0 +1,28 @@
+.navBar {
+    background-color: transparent;
+    z-index: 1; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    background-image: linear-gradient(to top, rgba(0, 0, 0, -.5), rgba(0, 0, 0, 0.5));
+    display: flex;
+    align-items: center;
+    position: fixed;
+    height: 4rem;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Add z-index to ensure navbar is on top of the sidebar */
+  
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+  
+.navbarContent {
+    margin-left: 10rem;
+    scale: 2.0;
+    display: flex;
+
+}
+    

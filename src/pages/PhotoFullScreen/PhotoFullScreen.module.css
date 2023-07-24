@@ -1,0 +1,15 @@
+.imageContainer {
+    height: 100vh;
+    width: auto;
+
+}
+
+.image {
+    height: auto;
+    width: auto;
+}
+
+.photoFullScreenDiv {
+    background-color: black;
+    display: flex;
+}
