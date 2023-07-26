@@ -19,6 +19,7 @@ const EnterPassword = () => {
 
         // Different auth flows for different login types - bsspeke and m.login.password
         const client = new Client(stages.userID, DOMAIN, password);
+        console.log("Client: ", client);
         if (stages.isBsspeke) {
             oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn });
         } else {

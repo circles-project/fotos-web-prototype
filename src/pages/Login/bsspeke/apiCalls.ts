@@ -17,11 +17,12 @@ interface oprfProps {
 }
 
 // Executes m.login.bsspeke-ecc.oprf request
-export function oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
+export async function oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
 
     setIsLoading(true);
 
-    const blind = client?.generateBlind();
+    console.log("About to generate blind...");
+    const blind = await client?.generateBlind();
     const blindBase64 = fromByteArray(blind!);
 
     // // btoa is a base64 encoding function that creates a Base64-encoded ASCII string from a binary string

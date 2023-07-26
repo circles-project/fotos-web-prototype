@@ -1,76 +1,93 @@
+import Module from "./EmccBsspeke.js";
 
 // Class to wrap the bsspeke client and interact with emscripten compiled code
 class Client {
-  private ctx;
+  private ctx: any;
+  private useModule: any;
+  private moduleInitialized: Promise<void>; // Promise to ensure that the emscripten module is initialized before we use it (added for module support)
 
   constructor(user_id: string, server_id: string, password: string) {
-    const uid_utf8 = encodeUTF8(user_id);
-    console.log("decoded uid_utf8: ", uid_utf8, "uid_utf8.length: ", uid_utf8.length);
-    const sid_utf8 = encodeUTF8(server_id);
-    console.log("sid_utf8: ", sid_utf8, "sid_utf8.length: ", sid_utf8.length);
-    const pwd_utf8 = encodeUTF8(password);
-    console.log("pwd_utf8: ", pwd_utf8, "pwd_utf8.length: ", pwd_utf8.length);
+    this.moduleInitialized = new Promise((resolve) => {
+      Module().then((Module) => {
+        this.useModule = Module;
+        console.log("useModule: ", this.useModule);
+      
+        const uid_utf8 = encodeUTF8(user_id);
+        console.log("decoded uid_utf8: ", uid_utf8, "uid_utf8.length: ", uid_utf8.length);
+        const sid_utf8 = encodeUTF8(server_id);
+        console.log("sid_utf8: ", sid_utf8, "sid_utf8.length: ", sid_utf8.length);
+        const pwd_utf8 = encodeUTF8(password);
+        console.log("pwd_utf8: ", pwd_utf8, "pwd_utf8.length: ", pwd_utf8.length);
 
-    // Calling emscriten compiled bsspeke code to generate client
-    this.ctx = Module.ccall("generate_client", "number", [], []);
-    console.log("ctx: ", this.ctx);
-    const success = Module.ccall("bsspeke_client_init", "number", ["number", "string", "number", "string", "number", "string", "number"], [this.ctx, uid_utf8, uid_utf8.length, sid_utf8, sid_utf8.length, pwd_utf8, pwd_utf8.length]);
-    console.log("Client init success: ", success);
+        // Calling emscriten compiled bsspeke code to generate client
+        this.ctx = this.useModule.ccall("generate_client", "number", [], []);
+        console.log("ctx: ", this.ctx);
+        const success = this.useModule.ccall("bsspeke_client_init", "number", ["number", "string", "number", "string", "number", "string", "number"], [this.ctx, uid_utf8, uid_utf8.length, sid_utf8, sid_utf8.length, pwd_utf8, pwd_utf8.length]);
+        console.log("Client init success: ", success);
+        resolve();
+      });
+    });
   }
+  // Generates a blind for the client 
+  async generateBlind(): Promise<Uint8Array> {
+    await this.moduleInitialized;
 
-  generateBlind(): Uint8Array {
-
-    const blindPointer = Module.ccall("bsspeke_client_generate_blind", "number", ["array", "number"], [new Uint8Array(32), this.ctx]);
-    const blind = new Uint8Array(Module.HEAPU8.buffer, blindPointer, 32);
+    const blindPointer = this.useModule.ccall("bsspeke_client_generate_blind", "number", ["array", "number"], [new Uint8Array(32), this.ctx]);
+    const blind = new Uint8Array(this.useModule.HEAPU8.buffer, blindPointer, 32);
     return blind;
 
   }
 
+  // Generates P and V hashes for the client
   generatePAndV(blind_salt: Uint8Array, blocks : number, iterations : number): { PArray: Uint8Array; VArray: Uint8Array } {
-    const P = Module._malloc(32);
-    const V = Module._malloc(32);
+    const P = this.useModule._malloc(32);
+    const V = this.useModule._malloc(32);
 
-    Module.ccall("bsspeke_client_generate_P_and_V", "number", ["number", "number", "array", "number", "number", "number"], [P, V, blind_salt, blocks, iterations, this.ctx]);
+    this.useModule.ccall("bsspeke_client_generate_P_and_V", "number", ["number", "number", "array", "number", "number", "number"], [P, V, blind_salt, blocks, iterations, this.ctx]);
 
-    const PArray = new Uint8Array(Module.HEAPU8.buffer, P, 32);
-    const VArray = new Uint8Array(Module.HEAPU8.buffer, V, 32);
+    const PArray = new Uint8Array(this.useModule.HEAPU8.buffer, P, 32);
+    const VArray = new Uint8Array(this.useModule.HEAPU8.buffer, V, 32);
 
     return { PArray, VArray };
   }
 
+  // Generates A for the client
   generateA(blindSalt: Uint8Array, phfParams : any) : Uint8Array {
     const blocks = phfParams.blocks;
     const iterations = phfParams.iterations;
-    Module.ccall("bsspeke_client_generate_A", "number", ["array", "number", "number", "number"], [blindSalt, blocks, iterations, this.ctx]);
-    const A = Module._malloc(32);
-    Module.ccall("bsspeke_client_get_A", "void", ["number", "number"], [A, this.ctx]);
-    const AArray = new Uint8Array(Module.HEAPU8.buffer, A, 32);
+    this.useModule.ccall("bsspeke_client_generate_A", "number", ["array", "number", "number", "number"], [blindSalt, blocks, iterations, this.ctx]);
+    const A = this.useModule._malloc(32);
+    this.useModule.ccall("bsspeke_client_get_A", "void", ["number", "number"], [A, this.ctx]);
+    const AArray = new Uint8Array(this.useModule.HEAPU8.buffer, A, 32);
     printPoint("A", AArray);
     return AArray;
   }
 
+  // Derives the shared key for the client
   deriveSharedKey(B: Uint8Array) {
-    Module.ccall("bsspeke_client_derive_shared_key", "void", ["array", "number"], [B, this.ctx]);
+    this.useModule.ccall("bsspeke_client_derive_shared_key", "void", ["array", "number"], [B, this.ctx]);
   }
 
+  // Generates the verifier for the client
   generateVerifier(): Uint8Array {
-    const clientVerifier = Module._malloc(32);
-    Module.ccall("bsspeke_client_generate_verifier", "void", ["number", "number"], [clientVerifier, this.ctx]);
-    const verifier = new Uint8Array(Module.HEAPU8.buffer, clientVerifier, 32);
+    const clientVerifier = this.useModule._malloc(32);
+    this.useModule.ccall("bsspeke_client_generate_verifier", "void", ["number", "number"], [clientVerifier, this.ctx]);
+    const verifier = new Uint8Array(this.useModule.HEAPU8.buffer, clientVerifier, 32);
     // console.log("verifier: ", verifier);
     return verifier;
   }
 
+  // Generates the hashed key for the client
   generateHashedKey() : Uint8Array {
     
     /* Temporary holder for function call, update parameters and return as needed -
        currently returns the hash
     */
-    const hash = Module._malloc(32);
-    const msg = Module._malloc(32);
+    const hash = this.useModule._malloc(32);
+    const msg = this.useModule._malloc(32);
     const msgLen = 32;
-    Module.ccall("bsspeke_client_generate_hashed_key", "void", ["number", "number"], [hash, msg, msgLen, this.ctx]);
-    const hashArray = new Uint8Array(Module.HEAPU8.buffer, hash, 32);
+    this.useModule.ccall("bsspeke_client_generate_hashed_key", "void", ["number", "number"], [hash, msg, msgLen, this.ctx]);
+    const hashArray = new Uint8Array(this.useModule.HEAPU8.buffer, hash, 32);
     return hashArray;
 
   }
@@ -87,6 +104,7 @@ function encodeUTF8(str: string): string {
 
 }
 
+// Decode a UTF-8 byte array to a string
 export function decodeUTF8(bytes: Uint8Array): string {
   const utf8Decoder = new TextDecoder("utf-8");
   return utf8Decoder.decode(bytes);
