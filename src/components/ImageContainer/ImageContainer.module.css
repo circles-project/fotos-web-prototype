@@ -7,9 +7,7 @@
     transition: all 0.3s ease-in-out;
     cursor: pointer;
     padding: 0.25rem;
-    &:hover {
-        transform: scale(1.05);
-    }
+   
 }
 
 .imageContainer {
@@ -22,7 +20,4 @@
     border-radius: 0.5rem;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
-    &:hover {
-        transform: scale(1.05);
-    }
 }

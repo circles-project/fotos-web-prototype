@@ -1,3 +1,4 @@
+// Note: MatrixClient coming from typings file of matrix js sdk which only contains some of the functions (using matrix js browser version which has no typings, weird workaround for some functions)
 import { MatrixClient } from "matrix-js-sdk";
 
 // matrixcs is a global variable on the window object to access the Matrix SDK for the browser
@@ -21,7 +22,7 @@ export async function setupClient(loginJson: any): Promise<MatrixClient> {
   await client.startClient().then(() => console.log("Client started: ", client)).catch((err: any) => console.log("Client start error: ", err));
 
   await new Promise((resolve) => {
-    client.once("sync", (state: any, prevState: any, res: any) => {
+    client.once("sync" as any, (state: any) => {
       if (state === "PREPARED") {
         console.log("Client prepared and synced");
         resolve("Client Resolved"); // Resolve the promise to indicate that the sync event has been handled

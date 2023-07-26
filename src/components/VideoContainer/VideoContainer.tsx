@@ -13,7 +13,6 @@ const VideoContainer = ({ file }: Props) => {
   const slug = file.fileURL.split("/").pop(); // Get the slug from the fileURL
 
   // Function to handle navigation to PhotoFullScreen
-  console.log("File: ", file);
   const handleNavigate = () => {
     navigate(`/photos/${slug}`, { state: { file } });
   };

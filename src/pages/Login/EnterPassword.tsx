@@ -22,7 +22,7 @@ const EnterPassword = () => {
         if (stages.isBsspeke) {
             oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn });
         } else {
-            mLoginAuth({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }, password);
+            mLoginAuth({ stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }, password);
         }
     }
 

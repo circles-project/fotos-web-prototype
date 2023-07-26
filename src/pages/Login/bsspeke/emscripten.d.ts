@@ -10,4 +10,3 @@ declare namespace Module {
     function _malloc(size: number): number;
     function _free(ptr: number): void;
   }
-  

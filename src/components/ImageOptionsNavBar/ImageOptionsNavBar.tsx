@@ -48,6 +48,7 @@ const ImageOptionsNavBar = () => {
     };
   }, []);
 
+  // TODO: Add ImageInfo sidebar
   return (
     <Navbar className={`${styles.navBar} ${!navbarVisible && styles.hidden}`}>
       <Container className={styles.navbarContent}>

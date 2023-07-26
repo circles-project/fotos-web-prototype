@@ -6,7 +6,7 @@ import { NavigateFunction } from "react-router-dom";
 import { AuthStages } from "../../../state-management/auth/store.ts";
 
 interface oprfProps {
-    client: Client;
+    client?: Client;
     stages?: AuthStages;
     setError: React.Dispatch<React.SetStateAction<string>>;
     navigate: NavigateFunction;
@@ -21,8 +21,8 @@ export function oprfRequest({ client, stages, setError, navigate, setEnteredPass
 
     setIsLoading(true);
 
-    const blind = client.generateBlind();
-    const blindBase64 = fromByteArray(blind);
+    const blind = client?.generateBlind();
+    const blindBase64 = fromByteArray(blind!);
 
     // // btoa is a base64 encoding function that creates a Base64-encoded ASCII string from a binary string
     console.log("Blind (base 64): ", blindBase64);
@@ -70,13 +70,13 @@ export function oprfRequest({ client, stages, setError, navigate, setEnteredPass
                 console.log("BHex: ", BHex);
                 const BBytes = hex_to_bytes(BHex);
 
-                const ABytes = client.generateA(blindSaltBytes, phfParams);
-                client.deriveSharedKey(BBytes);
-                const verifierBytes = client.generateVerifier();
+                const ABytes = client?.generateA(blindSaltBytes, phfParams);
+                client?.deriveSharedKey(BBytes);
+                const verifierBytes = client?.generateVerifier();
 
                 // takes in a Uint8Array and returns a base64 encoded string
-                const A = fromByteArray(ABytes);
-                const verifier = fromByteArray(verifierBytes);
+                const A = fromByteArray(ABytes!);
+                const verifier = fromByteArray(verifierBytes!);
 
                 // Bsspeke .verify request
                 let authBody2 = {
@@ -137,7 +137,7 @@ function verifyRequest(authBody2: any, { setError, navigate, setEnteredPassword,
 
 
 // Executes m.login.password request
-export function mLoginAuth({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps, password: string) {
+export function mLoginAuth({ stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps, password: string) {
 
     fetch(LOGIN_URL, {
         method: "POST",

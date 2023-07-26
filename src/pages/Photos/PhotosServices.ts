@@ -1,9 +1,10 @@
 import { FileInfoType } from "../../state-management/fileStore/store";
-import * as sdk from "matrix-js-sdk";
+// Note: MatrixClient coming from typings file of matrix js sdk which only contains some of the functions (using matrix js browser version which has no typings, weird workaround for some functions)
+// import * as sdk from "matrix-js-sdk";
 import { RoomStore } from "../../state-management/roomStore/store";
 
 // Uploads the photos to the Photo Room
-export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom: any): Promise<string> {
+export async function uploadFile(client: any, file: File, photoRoom: any): Promise<string> {
   return new Promise((resolve, reject) => {
       client.uploadContent(file).then((res: any) => {
         let fileType = "";
@@ -32,7 +33,7 @@ export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom
             h: 200,
             w: 200,
           }
-          }).then((res: sdk.ISendEventResponse) => {
+          }).then((res: any) => {
           resolve(res.event_id);
         }).catch((err: any) => {
           console.log("Error: ", err);
@@ -48,8 +49,12 @@ export async function uploadFile(client: sdk.MatrixClient, file: File, photoRoom
 export const fetchExistingFiles = (client: any, photoRoom: any, setFileList: (fileList: FileInfoType[]) => void) => {
 
   if (client) {
+    
+    // How many messages to grab, needs to be adjusted?
+    const BATCH_SIZE = 1000;
 
-    client.roomInitialSync(photoRoom.roomId, 100).then((res: any) => {
+    // Initial Sync to get the existing messages
+    client.roomInitialSync(photoRoom.roomId, BATCH_SIZE).then((res: any) => {
       console.log("Initial Sync: ", res);
 
       // Filtering out the events that are not messages and not empty
@@ -73,7 +78,7 @@ export const fetchExistingFiles = (client: any, photoRoom: any, setFileList: (fi
 };
 
 // Fetches the rooms and adds them to the room list state Zustand Store
-export async function roomSetup (client: sdk.MatrixClient, addRoom: (room: RoomStore) => void): Promise<void> {
+export async function roomSetup (client: any, addRoom: (room: RoomStore) => void): Promise<void> {
   const rooms = client.getRooms()
   const findPhotoGallery = rooms.find((room: any) => room.name === "My Photo Galleries");
   console.log("Photo Gallery: ", findPhotoGallery);
