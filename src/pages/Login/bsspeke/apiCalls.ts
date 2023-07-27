@@ -1,6 +1,5 @@
 import Client from "./BSSpekeWrapper.ts";
 import { fromByteArray } from "base64-js";
-import { LOGIN_URL } from "../../../services/HttpConstants.ts";
 import { hex_to_bytes } from "asmcrypto.js";
 import { NavigateFunction } from "react-router-dom";
 import { AuthStages } from "../../../state-management/auth/store.ts";
@@ -8,6 +7,7 @@ import { AuthStages } from "../../../state-management/auth/store.ts";
 interface oprfProps {
     client?: Client;
     stages?: AuthStages;
+    URL: string;
     setError: React.Dispatch<React.SetStateAction<string>>;
     navigate: NavigateFunction;
     setEnteredPassword: (enteredPassword: boolean) => void;
@@ -17,7 +17,7 @@ interface oprfProps {
 }
 
 // Executes m.login.bsspeke-ecc.oprf request
-export async function oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
+export async function oprfRequest({ client, stages, URL, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
 
     setIsLoading(true);
 
@@ -40,7 +40,7 @@ export async function oprfRequest({ client, stages, setError, navigate, setEnter
         },
     }
 
-    fetch(LOGIN_URL, {
+    fetch(URL, {
         method: "POST",
         body: JSON.stringify(authBody),
         headers: {
@@ -92,7 +92,7 @@ export async function oprfRequest({ client, stages, setError, navigate, setEnter
                         "verifier": verifier,
                     }
                 }
-                verifyRequest(authBody2, { client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn });
+                verifyRequest(authBody2, { URL, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn });
             }
         })
         .catch((error) => {
@@ -106,8 +106,8 @@ export async function oprfRequest({ client, stages, setError, navigate, setEnter
 }
 
 // Executes m.enroll.bsspeke-ecc.verify request
-function verifyRequest(authBody2: any, { setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
-    fetch(LOGIN_URL, {
+function verifyRequest(authBody2: any, { URL, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps) {
+    fetch(URL, {
         method: "POST",
         body: JSON.stringify(authBody2),
         headers: {
@@ -138,9 +138,9 @@ function verifyRequest(authBody2: any, { setError, navigate, setEnteredPassword,
 
 
 // Executes m.login.password request
-export function mLoginAuth({ stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps, password: string) {
+export function mLoginAuth({ stages, URL, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }: oprfProps, password: string) {
 
-    fetch(LOGIN_URL, {
+    fetch(URL, {
         method: "POST",
         body: JSON.stringify({
             "auth": {

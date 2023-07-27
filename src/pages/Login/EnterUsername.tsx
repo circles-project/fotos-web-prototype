@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LOGIN_URL } from '../../services/HttpConstants';
+import { MATRIX_BASE, LOGIN_ENDPOINT } from '../../services/HttpConstants';
 import useAuthStore from '../../state-management/auth/store';
 
 // EnterUsername page
@@ -7,14 +7,14 @@ const EnterUsername = () => {
     const [username, setUsername] = useState('');
     const [domain, setDomain] = useState('');
     const [error, setError] = useState('');
-    let user_id = `@${username}:${domain}`
-    const { stages, setIsLoading, setUserID, setIsBsspeke, setUserResponse } = useAuthStore();
+    let user_id = `@${username}:${domain}`;
+    const { stages, setIsLoading, setUserID, setIsBsspeke, setUserResponse, setDomainStore } = useAuthStore();
 
     // Handles the submit logic and processing of the username
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         setIsLoading(true);
         e.preventDefault();
-        fetch(LOGIN_URL, {
+        fetch(MATRIX_BASE + domain + LOGIN_ENDPOINT, {
             method: "POST",
             body: JSON.stringify({
                 "identifier": {
@@ -35,6 +35,7 @@ const EnterUsername = () => {
                 } else {
                     setUserID(user_id);
                     setUserResponse(json);
+                    setDomainStore(domain);
                     if (json.flows[0].stages[0] === "m.login.bsspeke-ecc.oprf" || json.flows.stages[0] === "m.login.bsspeke-ecc.verify") {
                         console.log("BSSPEKE Account Found")
                         setIsBsspeke(true);

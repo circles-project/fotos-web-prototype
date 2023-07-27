@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './bsspeke/apiCalls';
 import { oprfRequest, mLoginAuth } from './bsspeke/apiCalls';
 import Client from './bsspeke/BSSpekeWrapper';
-import { DOMAIN } from '../../services/HttpConstants';
+import { MATRIX_BASE } from '../../services/HttpConstants';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../state-management/auth/store';
 
@@ -10,20 +10,20 @@ import useAuthStore from '../../state-management/auth/store';
 const EnterPassword = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { stages, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn } = useAuthStore();
+    const { stages, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn, domainStore } = useAuthStore();
     const navigate = useNavigate();
 
     // Handles the submit logic and processing of the password
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         // Different auth flows for different login types - bsspeke and m.login.password
-        const client = new Client(stages.userID, DOMAIN, password);
+        const client = new Client(stages.userID, domainStore, password);
         console.log("Client: ", client);
+        const URL = MATRIX_BASE + domainStore + "/_matrix/client/r0/login";
         if (stages.isBsspeke) {
-            oprfRequest({ client, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn });
+            oprfRequest({ client, URL: URL, stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn});
         } else {
-            mLoginAuth({ stages, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn }, password);
+            mLoginAuth({ stages, URL, setError, navigate, setEnteredPassword, setServerResponse, setIsLoading, setIsLoggingIn}, password);
         }
     }
 

@@ -12,6 +12,7 @@ export interface AuthStages {
 
 interface AuthStore {
   stages: AuthStages;
+  domainStore: string;
   serverResponse: any;
   setIsLoggingIn: (isLoggingIn: boolean) => void;
   setUserID: (userID: string) => void;
@@ -20,6 +21,7 @@ interface AuthStore {
   setIsBsspeke: (isBsspeke: boolean) => void;
   setUserResponse: (userResponse: {}) => void;
   reset: () => void;
+  setDomainStore: (domainStore: string) => void;
   setServerResponse: (serverResponse: any) => void;
 }
 
@@ -35,6 +37,7 @@ const useAuthStore = create<AuthStore>(
         isBsspeke: false,
         userResponse: {},
       },
+      domainStore: "",
       serverResponse: {},
       setIsLoggingIn: (isLoggingIn: boolean) =>
         set((state) => ({
@@ -71,6 +74,7 @@ const useAuthStore = create<AuthStore>(
             userResponse: {},
           },
         })),
+      setDomainStore: (domainStore: string) => set(() => ({ domainStore: domainStore })),
       setServerResponse: (serverResponse: any) =>
         set(() => ({
           serverResponse: serverResponse,
