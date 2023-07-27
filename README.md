@@ -22,10 +22,10 @@ User Login and Authentication
      - Username and password validation/verification
      - [BS-Speke](https://gist.github.com/Sc00bz/e99e48a6008eef10a59d5ec7b4d87af3) cryptographic password verification
 - Essential upload, delete, and display functionality
-    - Fetching of existing files from gallery room on server and displays to /photos home screen
-    - Uploading of x number of files to gallery room on server followed by display update
+    - Fetching of existing files from "Photos" room on server and displays to /photos home screen
+    - Uploading of x number of files to "Photos" room on server followed by display update
     - Enlarging of files by clicking on them with custom routes setup and planned image view/edit options
-    - Deletion of files by sending deletion event to gallery room on server followed by display update
+    - Deletion of files by sending deletion event to "Photos" room on server followed by display update
 
 # Quickstart
 ## Development Quickstart
