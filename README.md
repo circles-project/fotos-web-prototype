@@ -31,9 +31,9 @@ User Login and Authentication
 ## Development Quickstart
 Note: Currently the fetch and upload files functionality only supports unencrypted rooms, 
 use this test account created with unencrypted rooms to see all features in action - 
-Username: testphotos3 
-Domain: varun.circles-dev.net 
-Password: swole
+- Username: testphotos3 
+- Domain: varun.circles-dev.net 
+- Password: swole
 
 Once file encryption is implemented, you can use the [Circles Web Interface](https://gitlab.futo.org/varun/circles-web-interface) or the [Circles app](https://circu.li/circles.html) to create an account and login to
 Futo Photos.
@@ -57,4 +57,7 @@ npm run dev
 # Follow the same steps as above (Development Quickstart) except for npm run dev
 npm run build 
 ```
+
+# Futo
+This project is a product of FUTO(https://futo.org/). FUTO is an organization dedicated to developing, both through in-house engineering and investment, technologies that frustrate centralization and industry consolidation. FUTO aims to develop and fund open-source tech that gives you back privacy and control.
 
