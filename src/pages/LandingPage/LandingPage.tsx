@@ -22,7 +22,7 @@ function LandingPage() {
   return (
     <>
       <div className={styles.homeCentering}>
-        <h1 style={{}}>Futo Photos</h1>
+        <h1 style={{}}>FOTOS</h1>
         <h2 style={{ marginTop: "3%" }}>Safe and Encrypted Cloud Storage</h2>
         <Button style={{ marginTop: "3%" }} onClick={() => { setIsLoggingIn(true); }}>
           Login

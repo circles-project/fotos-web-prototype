@@ -7,7 +7,7 @@ const NavBar = () => {
   return (
     <Navbar className={styles.navBar}>
       <Container className={styles.navbarContent}>
-        <Navbar.Brand href="#home">Futo Photos</Navbar.Brand>
+        <Navbar.Brand href="#home">FOTOS</Navbar.Brand>
           <div className={styles.uploadButtonContainer}>
             <UploadButton />
           </div>
